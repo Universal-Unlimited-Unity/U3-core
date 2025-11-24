@@ -9,7 +9,7 @@ class U3Rank(str,Enum):
   Universel = 'Universel'
   Unlimited = 'Unlimited'
   Limited = 'Limited'
-class U3Partner(BaseModel):
+class U3PartnerModel(BaseModel):
   Gender: U3Gender 
   Loyalty: U3Rank
   FirstName: str
