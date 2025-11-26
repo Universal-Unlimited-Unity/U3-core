@@ -1,7 +1,6 @@
 from pydantic import BaseModel, field_validator, model_validator, Field
 from enum import Enum
 
-PATH = 'U3Partners.csv'
 class U3Gender(str, Enum):
   Male = 'M'
   Female = 'F'
