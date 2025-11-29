@@ -1,7 +1,7 @@
 import sqlite3
 from U3Partner import U3PartnerModel
 
-db_path = 'partner_db'
+db_path = 'partner.db'
 
 def init_db():
   conn = sqlite3.connect(db_path)
