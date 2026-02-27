@@ -1,7 +1,7 @@
 from U3Partner import U3PartnerModel
 from sqlalchemy import Table, MetaData, Column, create_engine,String, Enum, Integer, select, insert
 
-db = 'postgresql+psycopg://postgres:adamaakif@localhost:5432/u3'
+db = 'postgresql+psycopg://postgres:adamaakif@db:5432/u3'
 eng = create_engine(db)
 metadata = MetaData()
 partners = Table(
@@ -31,7 +31,7 @@ def Update_UnityId(p: U3PartnerModel):
     UnityId_OG = p.UnityId
     while UnityId_Used(p.UnityId):
       Edit = Edit + 85
-      NewUnityId = UnityId_OG + Edit
+      NewUnityId = UnityId_OG + str(Edit)
       p.UnityId = NewUnityId
     
 def Add_Partner(p: U3PartnerModel):

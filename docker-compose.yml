@@ -1,18 +1,30 @@
 version: "3.9"
+
 services:
   backend:
-    build: .
+    build: ./backend
     ports: 
       - "8000:8000"
     depends_on:
       - db
+    environment:
+      - DATABASE_URL=postgresql://postgres:adamaakif@db:5432/u3
+
+  frontend:
+    build: ./frontend
+    ports:
+      - "8501:8501"
+    environment:
+      - API_URL=http://backend:8000/partners
+
   db:
     image: postgres:15
     environment: 
-      POSTGRES_USER:postgres
-      POSTGRES_PASSWORD:adamaakif
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: adamaakif
       POSTGRES_DB: u3
     volumes:
       - db_data:/var/lib/postgresql/data
-  volumes:
-    db_data
+
+volumes:
+  db_data:
