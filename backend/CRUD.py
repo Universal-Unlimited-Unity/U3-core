@@ -1,5 +1,5 @@
-from U3Partner import U3PartnerModel
-from sqlalchemy import Table, MetaData, Column, create_engine,String, Enum, Integer, select, insert,delete
+from U3Partner import U3PartnerModel, U3Update_PartnerModel
+from sqlalchemy import Table, MetaData, Column, create_engine,String, Enum, Integer, select, insert,delete, update
 
 db = 'postgresql+psycopg://postgres:adamaakif@db:5432/u3'
 eng = create_engine(db)
@@ -56,7 +56,13 @@ def Search(UnityId: str):
           search = select(partners)
           exist = conn.execute(search).fetchall()
           return exist
-    
+        
+def Search_No_All(UnityId: str):
+    with eng.connect() as conn:
+      search = select(partners).where(partners.c.UnityId == UnityId)
+      exist = conn.execute(search).fetchone()
+      return exist
+            
 def Remove_Partner(UnityId: str):
     if Search(UnityId):
         with eng.connect() as conn:
@@ -66,7 +72,28 @@ def Remove_Partner(UnityId: str):
             return 0
     return 1
 
-      
+def Update_Partner(UnityId: str, u: U3Update_PartnerModel):
+  with eng.connect() as conn:
+    if u.FirstName:
+      stmt = update(partners).where(partners.c.UnityId == UnityId).values(FirstName=u.FirstName)
+      conn.execute(stmt)
+    if u.LastName:
+      stmt = update(partners).where(partners.c.UnityId == UnityId).values(LastName=u.LastName)
+      conn.execute(stmt)
+    if u.MiddleName:
+      stmt = update(partners).where(partners.c.UnityId == UnityId).values(MiddleName=u.MiddleName)
+      conn.execute(stmt)
+    if u.Age:
+      stmt = update(partners).where(partners.c.UnityId == UnityId).values(Age=u.Age)
+      conn.execute(stmt)
+    if u.Loyalty:
+      stmt = update(partners).where(partners.c.UnityId == UnityId).values(Loyalty=u.Loyalty.value)
+      conn.execute(stmt)
+    if u.Gender:
+      stmt = update(partners).where(partners.c.UnityId == UnityId).values(Gender=u.Gender.value)
+      conn.execute(stmt)
+    conn.commit()
+
 
 
   

@@ -21,3 +21,11 @@ class U3PartnerModel(BaseModel):
     if self.UnityId is None:
       self.UnityId = f"U{self.LastName[-1]}{self.FirstName[-1]}{self.Loyalty.value}"
     return self
+
+class U3Update_PartnerModel(BaseModel):
+  Gender: U3Gender | None = None
+  Loyalty: U3Rank | None = None
+  FirstName: str | None = None
+  MiddleName: str | None = None
+  LastName: str | None = None
+  Age: int | None = Field(ge=18, default=None)
