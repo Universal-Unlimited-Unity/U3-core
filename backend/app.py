@@ -1,6 +1,6 @@
-from fastapi import FastAPI, Body, Path
+from fastapi import FastAPI, Body, Path, HTTPException
 from U3Partner import U3PartnerModel
-from CRUD import Add_Partner, init_db, Remove_Partner
+from CRUD import Add_Partner, init_db, Remove_Partner, Search
 from contextlib import asynccontextmanager
 from typing import Annotated
 @asynccontextmanager
@@ -14,8 +14,16 @@ app = FastAPI(lifespan=lifespan)
 async def create_partner(p: Annotated[U3PartnerModel, Body()]):
   Add_Partner(p)
   return {"status": "success", "partner": p.model_dump(mode="json")}
+
 @app.delete("/partners/{UnityId}")
-async def delete_partner(UnityId: Annotated[str, Path()]:
+async def delete_partner(UnityId: Annotated[str, Path()]):
   return Remove_Partner(UnityId)
-  
+
+@app.get("/partners/{UnityId}", response_model=list[U3PartnerModel] | U3PartnerModel)
+def get_partner(UnityId: Annotated[str, Path()]):
+  p = Search(UnityId)
+  if not p:
+    raise HTTPException(status_code=404)
+  return p
+
   

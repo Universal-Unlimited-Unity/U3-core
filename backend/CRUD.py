@@ -1,5 +1,5 @@
 from U3Partner import U3PartnerModel
-from sqlalchemy import Table, MetaData, Column, create_engine,String, Enum, Integer, select, insert
+from sqlalchemy import Table, MetaData, Column, create_engine,String, Enum, Integer, select, insert,delete
 
 db = 'postgresql+psycopg://postgres:adamaakif@db:5432/u3'
 eng = create_engine(db)
@@ -46,20 +46,27 @@ def Add_Partner(p: U3PartnerModel):
     stmt = insert(partners).values(UnityId=p.UnityId, FirstName=p.FirstName, MiddleName=p.MiddleName,LastName=p.LastName,Gender=p.Gender.value,Age=p.Age, Loyalty=p.Loyalty.value)
     conn.execute(stmt)
     conn.commit()
-def Search(UnitId: str):
+def Search(UnityId: str):
     with eng.connect() as conn:
-        search = select(partners).where(partners.c.UnityId == UnityId)
-        exist = conn.execute(search).fetchone()
-        return exist
-def Remove_partner(UnityId: str):
-    if UnityId_Search(UnityId):
+        if UnityId.lower() != "all":
+          search = select(partners).where(partners.c.UnityId == UnityId)
+          exist = conn.execute(search).fetchone()
+          return exist
+        else:
+          search = select(partners)
+          exist = conn.execute(search).fetchall()
+          return exist
+    
+def Remove_Partner(UnityId: str):
+    if Search(UnityId):
         with eng.connect() as conn:
-            stmt = delete(partners).where(partners.c.UnityId == UnityId)
-            conn.execute(stmt)
-            conn.commit()
+            with conn.begin():
+              stmt = delete(partners).where(partners.c.UnityId == UnityId)
+              conn.execute(stmt)
             return 0
     return 1
-        
+
+      
 
 
   
