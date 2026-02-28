@@ -20,14 +20,14 @@ async def delete_partner(UnityId: Annotated[str, Path()]):
   return Remove_Partner(UnityId)
 
 @app.get("/partners/{UnityId}", response_model=list[U3PartnerModel] | U3PartnerModel)
-def get_partner(UnityId: Annotated[str, Path()]):
+async def get_partner(UnityId: Annotated[str, Path()]):
   p = Search(UnityId)
   if not p:
     raise HTTPException(status_code=404)
   return p
 
 @app.patch("/partners/{UnityId}", response_model=U3Update_PartnerModel)
-def update_partner(UnityId: Annotated[str, Path()], u: Annotated[U3Update_PartnerModel, Body()]):
+async def update_partner(UnityId: Annotated[str, Path()], u: Annotated[U3Update_PartnerModel, Body()]):
   if Search_No_All(UnityId):
     Update_Partner(UnityId, u)
     return Search_No_All(UnityId)
