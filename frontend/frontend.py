@@ -35,9 +35,9 @@ if sb == "Add Partner":
         payload = {
             "Gender": gender,
             "Loyalty": loyalty,
-            "FirstName": first_name,
-            "MiddleName": middle_name if middle_name else None,
-            "LastName": last_name,
+            "FirstName": first_name.title(),
+            "MiddleName": middle_name.title() if middle_name else None,
+            "LastName": last_name.title(),
             "Age": age,
             "UnityId": None 
         }
