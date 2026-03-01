@@ -8,7 +8,7 @@ services:
     depends_on:
       - db
     environment:
-      - DATABASE_URL=postgresql://postgres:adamaakif@db:5432/u3
+      - DATABASE_URL=postgresql://postgres:********@db:5432/u3
 
   frontend:
     build: ./frontend
@@ -21,7 +21,7 @@ services:
     image: postgres:15
     environment: 
       POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: adamaakif
+      POSTGRES_PASSWORD: ********
       POSTGRES_DB: u3
     volumes:
       - db_data:/var/lib/postgresql/data
