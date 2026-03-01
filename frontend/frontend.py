@@ -1,7 +1,7 @@
 import streamlit as st
 import requests
 import os
-
+import pandas as pd
 API_URL = os.getenv("API_URL", "http://backend:8000/partners")
 
 st.set_page_config(page_title="U3 Partner Registry", page_icon="🤝")
@@ -48,12 +48,11 @@ if sb == "Add Partner":
             try:
                 with st.spinner("Sending data to U3-Core..."):
                     response = requests.post(API_URL, json=payload)
-                
-                if response.status_code == 200:
                     result = response.json()
-                    st.success(f"Partner Registered! UnityID: {result['partner']['UnityId']}")
+                if response.status_code == 200:
+                    st.success(f"Partner Registered!")
                     with st.spinner("Loading Partners's Info..."):
-                        st.write(result)
+                        st.dataframe([result])
                 else:
                     st.error(f"API Error {response.status_code}")
                     st.write(response.text)
@@ -72,16 +71,24 @@ if sb == "Delete Partner":
             if not UnityId:
                 st.warning("Please Enter The UnityId")
             else: 
-                try:
-                    with st.spinner("Deleting..."):
-                        response = requests.delete(f"{API_URL}/{UnityId}")
-                    if response.status_code == 200:
-                        if response.json() == 0:
-                            st.success(f"Partner with {UnityId} as a UnityId Was **Deleted**")
-                        else:
-                            st.error("Partner Not Found")
-                except Exception as e:
-                    st.error(f"Somthing went wrong in the backend: {response.text}")
+                if UnityId.title() != "All":
+                    try:
+                        with st.spinner("Deleting..."):
+                            p = requests.get(f"{API_URL}/{UnityId}")
+                            response = requests.delete(f"{API_URL}/{UnityId}")
+        
+                            if response.status_code == 200:
+                                if response.json() == 0:
+                                    st.toast(f"Partner with {UnityId} as a UnityId Was **Deleted**", icon="✅")
+                                    st.write("This is the Partner that was deleted")
+                                    st.dataframe([p.json()])
+                                else:
+                                    st.error("Partner Not Found")
+                
+                    except Exception as e:
+                        st.error(f"Somthing went wrong in the backend: {response.text}")
+                else:
+                    st.error("You can't delete all partners at once")
                     
 
 if sb == "Show Partner":
@@ -102,7 +109,7 @@ if sb == "Show Partner":
                         st.success(msg)
                         result = response.json()
                         with st.spinner("Loading Partners's Info..."):
-                            st.write(result)
+                            st.dataframe(result)
                     elif response.status_code == 404 and UnityId.lower() == "all":
                         st.info("The Partners's relational is **empty**")
                     elif response.status_code == 404:
@@ -152,7 +159,7 @@ if sb == "Update Partner":
                 if response.status_code == 200:
                     result = response.json()
                     st.success("Partner updated successfully!")
-                    st.write(result)
+                    st.dataframe([result])
                 elif response.status_code == 404:
                     st.error("Partner Not Found")
                 else:

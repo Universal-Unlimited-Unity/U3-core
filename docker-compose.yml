@@ -21,7 +21,7 @@ services:
     image: postgres:15
     environment: 
       POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: ********
+      POSTGRES_PASSWORD: adamaakif
       POSTGRES_DB: u3
     volumes:
       - db_data:/var/lib/postgresql/data
